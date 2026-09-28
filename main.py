@@ -1,56 +1,78 @@
 #Typeethon o TyPython
-sourcePath = "./main.py"
 
+from tokens import Token
+
+def getType(lexeme):
+
+    if (lexeme[0] >= "0" and lexeme[0] <= "9"):
+        return "value"
+    elif (lexeme[0] == "\""):
+        return "value"
+
+    match lexeme:
+        case "int" | "float" | "bool" | "string":
+            return "data type"
+        case "=":
+            return "equal"
+        case ":":
+            return "colon"
+        case "True" | "False":
+            return "value"
+        case _:
+            return"identifier"
+    
+    
+
+def matches(suspect, criminals):
+    for criminal in criminals:
+        if (suspect == criminal):
+            return True
+    return False
+
+
+    
+sourcePath = "./main.tpy"
 sourceFile = open(sourcePath)
 
-source = sourceFile.read()
+# source = sourceFile.read()
 
-# source = "int num = 0\nfloat a = 0.0"
+source = "num : int = 0\n a : float = 0.0"
 
 tokens = []
 
-# print(tokens[len(source) - 1])
 
-# print(source[3])
+lastRound = False
+lexeme = ""
 
-word = ""
-TYPE =""
 for i in range(0, len(source)):
-    
-    if (source[i] == " " or source[i] == "\n" or source[i]=="#"): 
 
-        if (word != ""):
-            token = ""
-
-            match word:
-                case "int" | "float" | "bool" | "string":
-                    token = "data type"
-                case "=":
-                    token = "equal"
-                case "True" | "False":
-                    token = "value"
-                case _:
-                    token="identifier"
+    try:
+        if(source[i+1]):
+            pass
+    except IndexError:
+        lastRound = True
             
-            if (word[0] >= "0" and word[0] <= "9"):
-                token="value"
-            elif (word[0] == "\""):
-                token="value"
+    if (matches(source[i], [" ", "\n", "#"])): 
 
-            tokens.append(f" {word} : {token} ")
-            word=""
-        
+        if (lexeme != ""):
+            type = getType(lexeme)
+
+            tokens.append(Token(lexeme, type))
+            lexeme=""
     else:
-        word += source[i]
+        lexeme += source[i]
 
-        
-    if (i > (len(source) - 2)):
-        if (word != ""):
-            tokens.append(f"{word}")
-        
+    if (lastRound):
+        if (lexeme != ""):
+            type = getType(lexeme)
 
-print("Token List:")
-for token in tokens:
-    print(f"\t[{token}]")
+            tokens.append(Token(lexeme, type))
+            lexeme=""
+
+
+print("type List:")
+for type in tokens:
+    print(f"\t{type}")
+
 
 
